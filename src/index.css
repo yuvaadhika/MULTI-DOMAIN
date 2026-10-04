@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    
+    /* Mild Pale White / Refined Light Slate Palette */
+    --bg-app: #f8fafc;           /* Mild Pale Slate Canvas */
+    --bg-surface: #ffffff;       /* Pure Crisp White Surface */
+    --bg-card: #ffffff;          /* Pure White Card */
+    --bg-card-hover: #f1f5f9;    /* Soft Light Slate Hover */
+    --bg-subtle: #f1f5f9;        /* Subtle Light Inset Background */
+    
+    --border-subtle: #e2e8f0;    /* Slate-200 Border */
+    --border-card: #e2e8f0;      /* Slate-200 Border */
+    --border-active: #0284c7;    /* Sky-600 Active Border */
+    
+    --text-primary: #0f172a;     /* Deep Slate-900 */
+    --text-secondary: #334155;   /* Slate-700 */
+    --text-muted: #64748b;       /* Slate-500 */
+    
+    /* Calming Vibrant Accents on Light Surface */
+    --accent-sky: #0284c7;
+    --accent-sky-bg: rgba(2, 132, 199, 0.08);
+    --accent-emerald: #059669;
+    --accent-emerald-bg: rgba(5, 150, 105, 0.08);
+    --accent-amber: #d97706;
+    --accent-amber-bg: rgba(217, 119, 6, 0.08);
+    --accent-rose: #e11d48;
+    --accent-rose-bg: rgba(225, 29, 72, 0.08);
+    --accent-indigo: #4f46e5;
+    --accent-indigo-bg: rgba(79, 70, 229, 0.08);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Universal Responsive Media Rule */
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ----------------------------------------------------
+   MILD & CLEAN PALE WHITE DESIGN SYSTEM UTILITIES
+---------------------------------------------------- */
+.mild-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mild-card:hover {
+  background-color: var(--bg-card-hover);
+  border-color: #cbd5e1;
+}
+
+.mild-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.mild-badge-sky {
+  background-color: var(--accent-sky-bg);
+  color: var(--accent-sky);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  font-family: var(--font-mono);
+}
+
+.mild-badge-emerald {
+  background-color: var(--accent-emerald-bg);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(5, 150, 105, 0.25);
+  font-family: var(--font-mono);
+}
+
+.mild-badge-amber {
+  background-color: var(--accent-amber-bg);
+  color: var(--accent-amber);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  font-family: var(--font-mono);
+}
+
+.mild-badge-rose {
+  background-color: var(--accent-rose-bg);
+  color: var(--accent-rose);
+  border: 1px solid rgba(225, 29, 72, 0.25);
+  font-family: var(--font-mono);
+}
+
+/* Light tactical map styling */
+.c2-map-tiles {
+  filter: saturate(0.8) contrast(1.05) brightness(0.98);
+}
+
+/* Custom soft minimal scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Leaflet container fixes */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #e2e8f0 !important;
+  font-family: inherit;
+  border-radius: 0.5rem;
+}
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+}
+.leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+/* ----------------------------------------------------
+   @MEDIA QUERIES FOR SEAMLESS RESPONSIVENESS
+---------------------------------------------------- */
+
+/* Mobile Phones (max-width: 640px) */
+@media (max-width: 640px) {
+  :root {
+    font-size: 14px;
+  }
+  
+  .responsive-container {
+    padding: 0.75rem !important;
+  }
+
+  .mobile-stack {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .mobile-hide {
+    display: none !important;
+  }
+
+  .mobile-full {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .modal-dialog {
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+    margin: 0.5rem !important;
+  }
+
+  .tab-bar-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+  }
+
+  .topbar-mobile {
+    height: auto !important;
+    padding: 0.5rem 0.75rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+}
+
+/* Tablets (min-width: 641px and max-width: 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  :root {
+    font-size: 15px;
+  }
+
+  .tablet-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .tablet-full {
+    width: 100% !important;
+  }
+
+  .modal-dialog {
+    max-width: 90vw !important;
+    max-height: 88vh !important;
+  }
+}
+
+/* Large Desktops (min-width: 1025px) */
+@media (min-width: 1025px) {
+  :root {
+    font-size: 16px;
+  }
+
+  .desktop-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.985); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

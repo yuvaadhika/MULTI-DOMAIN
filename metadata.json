@@ -1,0 +1,6 @@
+{
+  "name": "SENTINEL-X - Decision Training Simulator",
+  "description": "Immersive Multi-Domain Decision-Making Trainer for Degraded Communication Environments. Train command and sub-unit teams to coordinate, reason, and decide under information uncertainty.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

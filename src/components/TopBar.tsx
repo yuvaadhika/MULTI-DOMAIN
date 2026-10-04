@@ -18,7 +18,8 @@ import {
   Users,
   Eye,
   Compass,
-  Network
+  Network,
+  Box
 } from 'lucide-react';
 import { useSimulation } from '../simulation/simulationStore';
 import { SEED_USERS } from '../data/seedData';
@@ -26,6 +27,7 @@ import { UserRole } from '../types/simulation';
 import { RealityLensModal } from './RealityLensModal';
 import { IntentCardPanel } from '../features/simulation/IntentCardPanel';
 import { CommunicationTraceView } from '../features/simulation/CommunicationTraceView';
+import { OneArcSyntheticEnvironment3D } from '../features/simulation/OneArcSyntheticEnvironment3D';
 
 export const TopBar: React.FC = () => {
   const {
@@ -49,134 +51,166 @@ export const TopBar: React.FC = () => {
     startGuidedDemo,
     advanceDemoStep,
     stopGuidedDemo,
-    multiplayerSession
+    uncertaintyMetrics
   } = useSimulation();
 
   const [showRoleMenu, setShowRoleMenu] = useState(false);
-  const [showSystemStatus, setShowSystemStatus] = useState(false);
   const [isRealityLensOpen, setIsRealityLensOpen] = useState(false);
-  const [isIntentOpen, setIsIntentOpen] = useState(false);
   const [isTraceOpen, setIsTraceOpen] = useState(false);
+  const [isIntentOpen, setIsIntentOpen] = useState(false);
+  const [isOneArc3DOpen, setIsOneArc3DOpen] = useState(false);
+
+  // Active channel status summaries
+  const channelStates = session.channels;
+  const delayedCount = channelStates.filter(c => c.status === 'DELAYED').length;
+  const interruptedCount = channelStates.filter(c => c.status === 'INTERRUPTED').length;
 
   const getRoleBadge = (role: UserRole) => {
     switch (role) {
       case 'INSTRUCTOR':
-        return <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 rounded">INSTRUCTOR</span>;
+        return <span className="px-1.5 py-0.5 text-[9px] rounded font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">INSTRUCTOR</span>;
       case 'COMMANDER':
-        return <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-sky-50 text-sky-700 border border-sky-200 rounded">COMMANDER</span>;
+        return <span className="px-1.5 py-0.5 text-[9px] rounded font-mono font-bold bg-sky-50 text-sky-700 border border-sky-200">COMMANDER</span>;
       case 'GROUND_OBSERVER':
-        return <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">GROUND RECON</span>;
+        return <span className="px-1.5 py-0.5 text-[9px] rounded font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">GROUND RECON</span>;
       case 'AIR_OBSERVER':
-        return <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200 rounded">AIR WATCH</span>;
+        return <span className="px-1.5 py-0.5 text-[9px] rounded font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">AIR OBSERVER</span>;
       case 'NETWORK_OBSERVER':
-        return <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-amber-50 text-amber-700 border border-amber-200 rounded">NETWORK ANALYST</span>;
-      case 'OBSERVER':
-        return <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-slate-100 text-slate-700 border border-slate-300 rounded">EVALUATOR</span>;
+        return <span className="px-1.5 py-0.5 text-[9px] rounded font-mono font-bold bg-purple-50 text-purple-700 border border-purple-200">CYBER/EW</span>;
     }
   };
 
   return (
-    <header className="min-h-14 border-b border-[#e2e8f0] bg-white/95 backdrop-blur px-3 sm:px-4 flex flex-wrap items-center justify-between select-none z-30 sticky top-0 font-mono gap-2 py-1.5 sm:py-0 shadow-sm text-slate-900">
-      {/* Brand & Active Scenario */}
-      <div className="flex items-center space-x-3">
-        <button 
+    <header className="h-14 bg-white border-b border-[#e2e8f0] px-3 sm:px-4 flex items-center justify-between font-mono select-none z-30 shrink-0 shadow-xs text-slate-800">
+      {/* Left: Brand Identity & Active Scenario Badge */}
+      <div className="flex items-center space-x-3 sm:space-x-4">
+        {/* Brand */}
+        <div 
           onClick={() => setCurrentView('LANDING')}
-          className="flex items-center space-x-2.5 text-left group focus:outline-none"
+          className="flex items-center space-x-2 cursor-pointer group"
         >
-          <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 group-hover:border-sky-400 transition-colors shadow-sm">
-            <Radio className="w-4 h-4 text-sky-600" />
+          <div className="w-8 h-8 rounded-lg bg-sky-600 flex items-center justify-center font-black text-white text-sm shadow-xs group-hover:bg-sky-700 transition-all">
+            SX
           </div>
-          <div>
-            <div className="flex items-center space-x-1.5">
-              <span className="text-[10px] text-sky-600 font-bold tracking-widest uppercase">WYNDRA</span>
-              <span className="text-slate-300 font-bold">|</span>
-              <span className="font-bold tracking-wider text-xs sm:text-sm text-slate-900">SENTINEL-X</span>
+          <div className="hidden sm:block">
+            <div className="text-xs font-bold tracking-wider text-slate-900 group-hover:text-sky-700 transition-colors">
+              SENTINEL-X
             </div>
-            <div className="text-[10px] text-slate-500 font-sans truncate max-w-[140px] sm:max-w-[180px] lg:max-w-none">
-              {session.scenarioName}
+            <div className="text-[9px] text-slate-500 tracking-tight">
+              WYNDRA LABS
             </div>
           </div>
-        </button>
+        </div>
 
-        <div className="h-4 w-[1px] bg-[#e2e8f0] hidden md:block" />
+        {/* Active Scenario Codename Pill */}
+        <div className="hidden md:flex items-center space-x-1.5 bg-[#f1f5f9] border border-[#e2e8f0] px-2.5 py-1 rounded-lg text-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+          <span className="text-[11px] font-bold text-slate-900">{session.scenarioName}</span>
+          <span className="text-[10px] text-sky-700 font-semibold uppercase">[{session.scenarioId}]</span>
+        </div>
 
-        {/* Multiplayer Session Hub Link */}
-        <button
-          onClick={() => setCurrentView('SESSION_LOBBY')}
-          className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 text-xs rounded-md bg-[#f1f5f9] border border-[#e2e8f0] text-slate-700 hover:text-sky-700 hover:border-sky-300 transition-colors"
-        >
-          <Users className="w-3.5 h-3.5 text-sky-600" />
-          <span className="text-[10px] text-slate-500">Session:</span>
-          <span className="font-bold text-sky-700 text-xs">{multiplayerSession.sessionCode || 'M7K-42Q'}</span>
-        </button>
+        {/* Active Comms Degradation Live Badges */}
+        {(delayedCount > 0 || interruptedCount > 0) && (
+          <div className="flex items-center space-x-1 text-[10px]">
+            {delayedCount > 0 && (
+              <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-md font-semibold flex items-center space-x-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping" />
+                <span>{delayedCount} DELAYED</span>
+              </span>
+            )}
+            {interruptedCount > 0 && (
+              <span className="px-2 py-0.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-md font-semibold flex items-center space-x-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
+                <span>{interruptedCount} BLACKOUT</span>
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Center: Global Simulation Time & Clock Controls */}
-      <div className="flex items-center space-x-2 bg-[#f1f5f9] border border-[#e2e8f0] px-2.5 sm:px-3 py-1 rounded-lg">
-        <div className="flex items-center space-x-1.5">
+      {/* Center: Live Exercise Simulation Clock & Playback Transport */}
+      <div className="flex items-center space-x-2 sm:space-x-3 bg-[#f8fafc] border border-[#e2e8f0] px-2 sm:px-3 py-1 rounded-xl shadow-xs">
+        {/* Live Elapsed Time */}
+        <div className="flex items-center space-x-1.5 text-xs font-mono">
           <Clock className="w-3.5 h-3.5 text-sky-600" />
-          <span className="text-slate-500 text-xs">T+</span>
-          <span className="text-xs sm:text-sm font-bold text-slate-900 tracking-wider">
+          <span className="text-[10px] text-slate-500 font-semibold">T+</span>
+          <span className="font-bold text-slate-900 text-sm tracking-wider">
             {formatSimTime(session.simulationSec)}
           </span>
         </div>
 
-        <div className="h-4 w-[1px] bg-[#cbd5e1]" />
+        <div className="h-4 w-px bg-[#e2e8f0] hidden sm:block" />
 
+        {/* Simulation Playback Controls */}
         <div className="flex items-center space-x-1">
-          <button
-            onClick={isPlaying ? pauseSimulation : startSimulation}
-            title={isPlaying ? 'Pause Simulation' : 'Start / Resume Simulation'}
-            className={`p-1 rounded transition-colors ${
-              isPlaying 
-                ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' 
-                : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-            }`}
-          >
-            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-          </button>
+          {isPlaying ? (
+            <button
+              onClick={pauseSimulation}
+              title="Pause Simulation"
+              className="p-1 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 transition-colors"
+            >
+              <Pause className="w-3.5 h-3.5" />
+            </button>
+          ) : (
+            <button
+              onClick={startSimulation}
+              title="Start / Resume Exercise"
+              className="p-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition-colors"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+            </button>
+          )}
 
           <button
             onClick={resetSimulation}
-            title="Reset Simulation Clock"
-            className="p-1 rounded bg-white hover:bg-slate-200 text-slate-700 border border-[#e2e8f0] transition-colors"
+            title="Reset Exercise Scenario"
+            className="p-1 rounded-md bg-[#f1f5f9] hover:bg-slate-200 text-slate-600 hover:text-slate-900 border border-[#e2e8f0] transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="h-4 w-[1px] bg-[#cbd5e1]" />
-
-        {/* Speed multipliers */}
-        <div className="flex items-center space-x-0.5">
-          {([1, 2, 4] as const).map(s => (
+        {/* Speed Multiplier Pill */}
+        <div className="hidden lg:flex items-center space-x-0.5 bg-white border border-[#e2e8f0] rounded-md p-0.5 text-[10px]">
+          {([1, 2, 4] as const).map(speed => (
             <button
-              key={s}
-              onClick={() => setSimSpeed(s)}
-              className={`px-1.5 py-0.5 rounded text-[10px] font-semibold transition-colors ${
-                simSpeed === s ? 'bg-sky-100 text-sky-800 border border-sky-300 font-bold' : 'text-slate-600 hover:text-slate-900'
+              key={speed}
+              onClick={() => setSimSpeed(speed)}
+              className={`px-1.5 py-0.5 rounded font-bold transition-all ${
+                simSpeed === speed 
+                  ? 'bg-sky-600 text-white' 
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              {s}x
+              {speed}x
             </button>
           ))}
         </div>
 
-        {session.status === 'RUNNING' && (
+        {currentUser.role === 'INSTRUCTOR' && (
           <button
             onClick={endSimulation}
-            className="ml-1 px-2 py-0.5 text-[10px] font-mono bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300 rounded transition-colors"
+            className="hidden sm:inline px-2 py-0.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold transition-colors"
+            title="Terminate Active Exercise & Generate Final AAR Report"
           >
             End Sim
           </button>
         )}
       </div>
 
-
       {/* Right Controls: Innovation Shortcuts, Guided Demo, Role Switcher */}
       <div className="flex items-center space-x-2">
         {/* Quick-Action Innovation Triggers */}
         <div className="hidden xl:flex items-center space-x-1 bg-[#f1f5f9] border border-[#e2e8f0] p-0.5 rounded-lg">
+          <button
+            onClick={() => setIsOneArc3DOpen(true)}
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs rounded-md text-sky-800 bg-sky-100 hover:bg-sky-200 transition-colors font-bold shadow-xs border border-sky-300"
+            title="Open 3D OneArc Synthetic Environment (UAV & Terrain)"
+          >
+            <Box className="w-3.5 h-3.5 text-sky-700" />
+            <span>3D OneArc</span>
+          </button>
+
           <button
             onClick={() => setIsRealityLensOpen(true)}
             className="flex items-center space-x-1 px-2.5 py-1 text-xs rounded-md text-sky-700 hover:bg-sky-100 transition-colors font-medium"
@@ -321,6 +355,17 @@ export const TopBar: React.FC = () => {
         </div>
       </div>
 
+      {/* OneArc 3D Synthetic Environment Modal */}
+      {isOneArc3DOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-sm animate-fade-in font-mono">
+          <div className="w-full h-full max-w-7xl max-h-[95vh] flex flex-col rounded-2xl overflow-hidden shadow-2xl bg-white border border-slate-200">
+            <OneArcSyntheticEnvironment3D
+              isFullscreen={false}
+              onFullscreenToggle={() => setIsOneArc3DOpen(false)}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Innovation 1: Reality Lens Modal */}
       {isRealityLensOpen && (

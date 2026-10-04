@@ -1,7 +1,14 @@
 # SENTINEL-X
 ### Immersive Multi-Domain Decision-Making Trainer for Degraded Communication Environments
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-multi--domain--psi.vercel.app-blue?style=for-the-badge&logo=vercel)](https://multi-domain-psi.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-yuvaadhika%2FMULTI--DOMAIN-181717?style=for-the-badge&logo=github)](https://github.com/yuvaadhika/MULTI-DOMAIN)
+
+**Live Deployment URL:** [https://multi-domain-psi.vercel.app/](https://multi-domain-psi.vercel.app/)
+
 SENTINEL-X is a web-based command-and-control simulation platform engineered to train small-team and sub-unit commanders to coordinate, reason, and decide under information uncertainty.
+
+Featuring **OneArc-Grade 3D Synthetic Environment** with real-time WebGL topographical terrain, UAV EO/IR gimbal feeds, Forward Recon sightlines, and Electronic Warfare (EW) bubble visualization.
 
 ---
 
